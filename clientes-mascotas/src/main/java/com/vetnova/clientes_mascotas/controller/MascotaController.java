@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.vetnova.clientes_mascotas.model.Mascota;
 import com.vetnova.clientes_mascotas.model.MascotaDTO;
@@ -34,7 +35,7 @@ public class MascotaController {
     }
 
     @PostMapping
-    public ResponseEntity<Mascota> postMascota(@RequestBody MascotaDTO dto) {
+    public ResponseEntity<Mascota> postMascota(@Valid @RequestBody MascotaDTO dto) {
         try {
             Mascota nuevo = mascotaService.guardarMascota(dto);
             return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
@@ -71,4 +72,13 @@ public class MascotaController {
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
+    @PatchMapping("/desactivar/{id}")
+    public ResponseEntity<Mascota> desactivarMascota(@PathVariable Long id) {
+        Mascota desactivada = mascotaService.desactivarMascota(id);
+        if (desactivada == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(desactivada, HttpStatus.OK);
+    }
+    
 }

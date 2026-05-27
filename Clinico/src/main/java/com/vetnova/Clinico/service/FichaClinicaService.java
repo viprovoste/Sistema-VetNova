@@ -48,7 +48,7 @@ public class FichaClinicaService {
     }
 
     public List<FichaClinica> listarFichasClinicas() {
-        return fichaClinicaRepository.findAll();
+    return fichaClinicaRepository.findByActivoTrue();
     }
     
     public Optional<FichaClinica> findById(Long id) {
@@ -80,6 +80,16 @@ public class FichaClinicaService {
                 ficha.setPeso(datosaCambiar.getPeso());
             }
  
+            return fichaClinicaRepository.save(ficha);
+        }
+        return null;
+    }
+
+    public FichaClinica desactivarFichaClinica(Long id) {
+    Optional<FichaClinica> fichaExistente = fichaClinicaRepository.findById(id);
+        if (fichaExistente.isPresent()) {
+            FichaClinica ficha = fichaExistente.get();
+            ficha.setActivo(false);
             return fichaClinicaRepository.save(ficha);
         }
         return null;

@@ -83,5 +83,14 @@ public class FichaClinicaController {
         
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
+
+    @PatchMapping("/desactivar/{id}")
+    public ResponseEntity<FichaClinica> desactivarFichaClinica(@PathVariable Long id) {
+        FichaClinica desactivada = fichaClinicaService.desactivarFichaClinica(id);
+        if (desactivada == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(desactivada, HttpStatus.OK);
+    }
     
 }

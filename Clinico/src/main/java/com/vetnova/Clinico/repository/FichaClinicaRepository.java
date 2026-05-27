@@ -16,4 +16,6 @@ public interface FichaClinicaRepository  extends JpaRepository<FichaClinica, Lon
 
     List<FichaClinica> findByRutDueño(String rutDueño);
 
+    List<FichaClinica> findByActivoTrue();
+    
 }

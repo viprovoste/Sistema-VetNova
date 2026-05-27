@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.vetnova.clientes_mascotas.model.Cliente;
 import com.vetnova.clientes_mascotas.service.ClienteService;
@@ -33,7 +34,7 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Cliente> postCliente(@RequestBody Cliente cliente) {
+    public ResponseEntity<Cliente> postCliente(@Valid @RequestBody Cliente cliente) {
         Cliente nuevo;
         try {
             nuevo = clienteService.guardarCliente(cliente);
@@ -97,6 +98,15 @@ public class ClienteController {
         }
         
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
+    }
+
+    @PatchMapping("/desactivar/{id}")
+    public ResponseEntity<Cliente> desactivarCliente(@PathVariable Long id) {
+        Cliente desactivado = clienteService.desactivarCliente(id);
+        if (desactivado == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(desactivado, HttpStatus.OK);
     }
 
 }

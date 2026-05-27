@@ -19,7 +19,7 @@ public class ClienteService {
     }
 
     public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+    return clienteRepository.findByActivoTrue();
     }
 
     public Optional<Cliente> findById(Long id) {
@@ -67,4 +67,15 @@ public class ClienteService {
         }        
         return null; 
     }
+
+    public Cliente desactivarCliente(Long id) {
+    Optional<Cliente> clienteExistente = clienteRepository.findById(id);
+        if (clienteExistente.isPresent()) {
+            Cliente cliente = clienteExistente.get();
+            cliente.setActivo(false);
+            return clienteRepository.save(cliente);
+        }
+        return null;
+    }
+    
 }

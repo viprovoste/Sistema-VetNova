@@ -11,5 +11,7 @@ import com.vetnova.clientes_mascotas.model.Mascota;
 public interface MascotaRepository extends JpaRepository<Mascota, Long>{
 
     List<Mascota> findByNombre(String nombre);
+
+    List<Mascota> findByActivoTrue();
     
 }

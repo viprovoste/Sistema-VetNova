@@ -34,7 +34,7 @@ public class MascotaService {
     }
 
     public List<Mascota> listarMascotas() {
-        return mascotaRepository.findAll();
+    return mascotaRepository.findByActivoTrue();
     }
 
     public Optional<Mascota> findById(Long id) {
@@ -65,4 +65,13 @@ public class MascotaService {
         return null;
     }
     
+    public Mascota desactivarMascota(Long id) {
+    Optional<Mascota> mascotaExistente = mascotaRepository.findById(id);
+        if (mascotaExistente.isPresent()) {
+            Mascota mascota = mascotaExistente.get();
+            mascota.setActivo(false);
+            return mascotaRepository.save(mascota);
+        }
+        return null;
+    }
 }

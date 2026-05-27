@@ -18,4 +18,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{
 
     List<Cliente> findByCorreo(String correo);
 
+    List<Cliente> findByActivoTrue();
+    
 }
