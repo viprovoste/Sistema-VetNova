@@ -10,7 +10,9 @@ import com.vetnova.agendamiento_sucursales.model.EstadoBox;
 
 @Repository
 public interface BoxRepository extends JpaRepository<Box, Long> {
+
     List<Box> findBySucursalIdSucursal(Long idSucursal);
-    List<Box> findBySucursalIdSucursalAndEstado(Long idSucursal, EstadoBox estado);
+
+    List<Box> findBySucursalIdSucursalyEstado(Long idSucursal, EstadoBox estado);
     
 }
