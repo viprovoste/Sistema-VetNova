@@ -20,7 +20,7 @@ public class BoxService {
     }
 
     public List<Box> listarBoxesPorEstado(Long idSurcursal, EstadoBox estado) {
-        return boxRepository.findBySucursalIdSucursalyEstado(idSurcursal, estado);
+        return boxRepository.findBySucursalIdSucursalAndEstado(idSurcursal, estado);
     }
 
     public Box actualizarEstadoBox(Long idBox, EstadoBox nuevoEstado) {

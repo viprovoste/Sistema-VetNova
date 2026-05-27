@@ -13,6 +13,6 @@ public interface BoxRepository extends JpaRepository<Box, Long> {
 
     List<Box> findBySucursalIdSucursal(Long idSucursal);
 
-    List<Box> findBySucursalIdSucursalyEstado(Long idSucursal, EstadoBox estado);
+    List<Box> findBySucursalIdSucursalAndEstado(Long idSucursal, EstadoBox estado);
     
 }
