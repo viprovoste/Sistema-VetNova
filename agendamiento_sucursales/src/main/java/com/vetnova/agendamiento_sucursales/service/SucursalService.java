@@ -10,7 +10,7 @@ import com.vetnova.agendamiento_sucursales.model.Sucursal;
 import com.vetnova.agendamiento_sucursales.repository.SucursalRepository;
 
 @Service
-public class SurcursalService {
+public class SucursalService {
     @Autowired
     private SucursalRepository sucursalRepository;
 
