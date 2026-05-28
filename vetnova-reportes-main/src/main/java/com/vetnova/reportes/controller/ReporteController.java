@@ -22,12 +22,9 @@ public class ReporteController {
 
     @PostMapping
     public ResponseEntity<Reporte> crearReporte(@RequestBody SoporteDTO dto) {
-        // Como este es el microservicio de Analytics, el Reporte se basa en métricas,
-        // no en el contenido del soporte (asunto/descripción).
         
         Reporte reporte = new Reporte();
         
-        // Aquí asignarías los valores calculados por tu lógica de negocio
         reporte.setTotalAtenciones(1);
         reporte.setTotalAlertasGeneradas(1);
         reporte.setRendimientoGlobal(100.0);
