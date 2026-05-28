@@ -1,6 +1,8 @@
 package com.soporte.soporte.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -11,9 +13,16 @@ public class Soporte {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El asunto es obligatorio")
     private String asunto;
+
+    @NotBlank(message = "La descripcion es obligatoria")
     private String descripcion;
+
+    @NotBlank(message = "El estado es obligatorio")
     private String estado;
+
+    @NotNull(message = "El ID de usuario es obligatorio")
     private Long usuarioId;
 
     @OneToMany(mappedBy = "soporte", cascade = CascadeType.ALL, orphanRemoval = true)
