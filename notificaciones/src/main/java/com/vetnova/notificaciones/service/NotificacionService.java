@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificacionService {
@@ -18,9 +19,9 @@ public class NotificacionService {
     }
 
     public Notificacion guardar(Notificacion notificacion) {
-        logger.info("LOG: Procesando guardado de notificación para destino: {}", notificacion.getDestinatario());
+        logger.info("LOG: Procesando guardado de notificacion para destino: {}", notificacion.getDestinatario());
         Notificacion guardada = notificacionRepository.save(notificacion);
-        logger.info("LOG: Notificación guardada con ID: {}", guardada.getId());
+        logger.info("LOG: Notificacion guardada con ID: {}", guardada.getId());
         return guardada;
     }
 
@@ -29,9 +30,13 @@ public class NotificacionService {
         return notificacionRepository.findAll();
     }
 
-    // Método para completar el CRUD
+    public Optional<Notificacion> buscarPorId(Long id) {
+        logger.info("LOG: Buscando notificacion con ID: {}", id);
+        return notificacionRepository.findById(id);
+    }
+
     public void eliminarNotificacion(Long id) {
-        logger.info("LOG: Eliminando notificación con ID: {}", id);
+        logger.info("LOG: Eliminando notificacion con ID: {}", id);
         notificacionRepository.deleteById(id);
     }
 }

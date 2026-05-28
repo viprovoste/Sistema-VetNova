@@ -4,6 +4,8 @@ import com.vetnova.notificaciones.dto.SoporteDTO;
 import com.vetnova.notificaciones.model.Notificacion;
 import com.vetnova.notificaciones.service.NotificacionService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequestMapping("/api/notificaciones")
 public class NotificacionController {
 
+    private static final Logger logger = LoggerFactory.getLogger(NotificacionController.class);
     private final NotificacionService notificacionService;
 
     public NotificacionController(NotificacionService notificacionService) {
@@ -23,7 +26,6 @@ public class NotificacionController {
 
     @PostMapping
     public ResponseEntity<Notificacion> crearNotificacion(@Valid @RequestBody SoporteDTO dto) {
-
         Notificacion notificacion = new Notificacion();
         notificacion.setTipo("EMAIL");
         notificacion.setDestinatario("usuario-" + dto.getUsuarioId());
@@ -34,31 +36,31 @@ public class NotificacionController {
         notificacion.setIdCita(dto.getUsuarioId());
 
         Notificacion nuevaNotificacion = notificacionService.guardar(notificacion);
-
-        System.out.println("¡Éxito! Notificación recibida para el usuario ID: " + dto.getUsuarioId());
+        logger.info("Notificacion recibida para el usuario ID: {}", dto.getUsuarioId());
 
         return new ResponseEntity<>(nuevaNotificacion, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<Notificacion>> listarTodas() {
-        return new ResponseEntity<>(notificacionService.listarTodas(), HttpStatus.OK);
+        return ResponseEntity.ok(notificacionService.listarTodas());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Notificacion> obtenerPorId(@PathVariable Long id) {
-        return notificacionService.listarTodas().stream()
-                .filter(n -> n.getId().equals(id))
-                .findFirst()
+        return notificacionService.buscarPorId(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Notificacion> actualizar(@PathVariable Long id, @Valid @RequestBody Notificacion notificacion) {
-        notificacion.setId(id);
-        Notificacion actualizada = notificacionService.guardar(notificacion);
-        return ResponseEntity.ok(actualizada);
+        return notificacionService.buscarPorId(id)
+                .map(n -> {
+                    notificacion.setId(id);
+                    return ResponseEntity.ok(notificacionService.guardar(notificacion));
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
