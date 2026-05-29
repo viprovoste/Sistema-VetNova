@@ -8,6 +8,4 @@ import com.vetnova.agendamiento_sucursales.model.Sucursal;
 @Repository
 public interface SucursalRepository extends JpaRepository<Sucursal, Long>  {
 
-    
-    
 }

@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class Consulta {
     private Long idConsulta;
  
     @Column(nullable = false)
+    @NotBlank(message = "El motivo de la consulta es obligatorio")
     private String motivoConsulta;
  
     @Column(columnDefinition = "VARCHAR(50) DEFAULT 'No se registro'")

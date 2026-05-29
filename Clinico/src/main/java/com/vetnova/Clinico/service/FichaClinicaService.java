@@ -84,4 +84,13 @@ public class FichaClinicaService {
         }
         return null;
     }
+
+    public boolean eliminarFichaClinica(Long id) {
+        if (fichaClinicaRepository.existsById(id)) {
+            fichaClinicaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
+    
 }

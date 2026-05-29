@@ -30,25 +30,25 @@ public class FichaClinica {
 
     @Column(nullable = false)
     private Long idMascota;
- 
+
     @Column(nullable = false)
     private Long idCliente;
 
     @Column(nullable = false)
     private String nombreMascota;
- 
+
     @Column(nullable = false)
     private String nombreDueño;
- 
+
     @Column(nullable = false)
     private String apellidoDueño;
 
     @Column(nullable = false)
     private String rutDueño;
- 
+
     @Column(nullable = false)
     private String especie;
- 
+
     @Column(nullable = false)
     private String peso;
 
@@ -58,6 +58,9 @@ public class FichaClinica {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean activo = true;
 
     @OneToMany(mappedBy = "fichaClinica", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("ficha-consultas")

@@ -15,5 +15,5 @@ public interface FichaClinicaRepository  extends JpaRepository<FichaClinica, Lon
     List<FichaClinica> findByNombreDueño(String nombreDueño);
 
     List<FichaClinica> findByRutDueño(String rutDueño);
-
+    
 }

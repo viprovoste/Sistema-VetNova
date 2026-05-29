@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.vetnova.Clinico.model.Consulta;
 import com.vetnova.Clinico.service.ConsultaService;
@@ -23,13 +24,13 @@ public class ConsultaController {
     private ConsultaService consultaService;
 
     @PostMapping("/{idFicha}")
-    public ResponseEntity<Consulta> postConsulta(@PathVariable Long idFicha, @RequestBody Consulta consulta) {
+    public ResponseEntity<Consulta> postConsulta(@PathVariable Long idFicha, @Valid @RequestBody Consulta consulta) {
         try {
-        Consulta nuevo = consultaService.guardarConsulta(idFicha, consulta);
-        if (nuevo == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
-        }
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+            Consulta nuevo = consultaService.guardarConsulta(idFicha, consulta);
+            if (nuevo == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
