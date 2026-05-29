@@ -22,14 +22,12 @@ public class MascotaService {
 
     public Mascota guardarMascota(MascotaDTO dto) {
         Cliente cliente = clienteRepository.findById(dto.getIdCliente())
-                            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
-
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         Mascota mascota = new Mascota();
         mascota.setNombre(dto.getNombre());
         mascota.setEspecie(dto.getEspecie());
         mascota.setPeso(dto.getPeso());
-        mascota.setCliente(cliente); 
-
+        mascota.setCliente(cliente);
         return mascotaRepository.save(mascota);
     }
 
@@ -47,22 +45,21 @@ public class MascotaService {
 
     public Mascota actualizarMascota(Long id, Mascota datosaCambiar) {
         Optional<Mascota> mascotaExistente = mascotaRepository.findById(id);
-
         if (mascotaExistente.isPresent()) {
             Mascota mascota = mascotaExistente.get();
-
-            if (datosaCambiar.getNombre() != null) {
-                mascota.setNombre(datosaCambiar.getNombre());
-            }
-            if (datosaCambiar.getEspecie() != null) {
-                mascota.setEspecie(datosaCambiar.getEspecie());
-            }
-            if (datosaCambiar.getPeso() != null) {
-                mascota.setPeso(datosaCambiar.getPeso());
-            }
+            if (datosaCambiar.getNombre() != null) mascota.setNombre(datosaCambiar.getNombre());
+            if (datosaCambiar.getEspecie() != null) mascota.setEspecie(datosaCambiar.getEspecie());
+            if (datosaCambiar.getPeso() != null) mascota.setPeso(datosaCambiar.getPeso());
             return mascotaRepository.save(mascota);
         }
         return null;
     }
-    
+
+    public boolean eliminarMascota(Long id) {
+        if (mascotaRepository.existsById(id)) {
+            mascotaRepository.deleteById(id);
+            return true;
+        }
+        return false;
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.vetnova.clientes_mascotas.model.Mascota;
 import com.vetnova.clientes_mascotas.model.MascotaDTO;
@@ -34,7 +36,7 @@ public class MascotaController {
     }
 
     @PostMapping
-    public ResponseEntity<Mascota> postMascota(@RequestBody MascotaDTO dto) {
+    public ResponseEntity<Mascota> postMascota(@Valid @RequestBody MascotaDTO dto) {
         try {
             Mascota nuevo = mascotaService.guardarMascota(dto);
             return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
@@ -71,4 +73,13 @@ public class MascotaController {
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarMascota(@PathVariable Long id) {
+        boolean eliminado = mascotaService.eliminarMascota(id);
+        if (!eliminado) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    
 }

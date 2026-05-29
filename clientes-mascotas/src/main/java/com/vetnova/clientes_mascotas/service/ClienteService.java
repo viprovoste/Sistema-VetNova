@@ -44,27 +44,23 @@ public class ClienteService {
 
     public Cliente actualizarCliente(Long id, Cliente datosaCambiar) {
         Optional<Cliente> clienteExistente = clienteRepository.findById(id);
-
         if (clienteExistente.isPresent()) {
             Cliente cliente = clienteExistente.get();
-
-            if (datosaCambiar.getNombres() != null) {
-                cliente.setNombres(datosaCambiar.getNombres());
-            }
-            if (datosaCambiar.getApellidos() != null) {
-                cliente.setApellidos(datosaCambiar.getApellidos());
-            }
-            if (datosaCambiar.getCorreo() != null) {
-                cliente.setCorreo(datosaCambiar.getCorreo());
-            }
-            if (datosaCambiar.getRut() != null) {
-                cliente.setRut(datosaCambiar.getRut());
-            }            
-            if (datosaCambiar.getNumero() != null) { 
-                cliente.setNumero(datosaCambiar.getNumero());
-            }
+            if (datosaCambiar.getNombres() != null) cliente.setNombres(datosaCambiar.getNombres());
+            if (datosaCambiar.getApellidos() != null) cliente.setApellidos(datosaCambiar.getApellidos());
+            if (datosaCambiar.getCorreo() != null) cliente.setCorreo(datosaCambiar.getCorreo());
+            if (datosaCambiar.getRut() != null) cliente.setRut(datosaCambiar.getRut());
+            if (datosaCambiar.getNumero() != null) cliente.setNumero(datosaCambiar.getNumero());
             return clienteRepository.save(cliente);
-        }        
-        return null; 
+        }
+        return null;
+    }
+
+    public boolean eliminarCliente(Long id) {
+        if (clienteRepository.existsById(id)) {
+            clienteRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
