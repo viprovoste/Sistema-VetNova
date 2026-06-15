@@ -2,7 +2,7 @@ package com.vetnova.reportes.controller;
 
 import com.vetnova.reportes.dto.SoporteDTO;
 import com.vetnova.reportes.model.Reporte;
-import com.vetnova.reportes.service.ReporteService;
+import com.vetnova.reportes.service.IReporteService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +14,20 @@ import java.util.List;
 @RequestMapping("/api/reportes")
 public class ReporteController {
 
-    private final ReporteService service;
+    private final IReporteService service;
 
-    public ReporteController(ReporteService service) {
+    public ReporteController(IReporteService service) {
         this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<Reporte> crearReporte(@RequestBody SoporteDTO dto) {
-        
+    public ResponseEntity<Reporte> crearReporte(@Valid @RequestBody SoporteDTO dto) {
         Reporte reporte = new Reporte();
-        
-        reporte.setTotalAtenciones(1);
-        reporte.setTotalAlertasGeneradas(1);
-        reporte.setRendimientoGlobal(100.0);
-        
+        reporte.setTotalAtenciones(dto.getUsuarioId() != null ? 1 : 0);
+        reporte.setTotalAlertasGeneradas(dto.getEstado() != null ? 1 : 0);
+        reporte.setRendimientoGlobal(dto.getEstado() != null &&
+                dto.getEstado().equalsIgnoreCase("RESUELTO") ? 100.0 : 50.0);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(service.guardarReporte(reporte));
     }
 
