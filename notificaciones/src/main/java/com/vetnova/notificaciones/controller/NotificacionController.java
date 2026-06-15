@@ -1,8 +1,8 @@
 package com.vetnova.notificaciones.controller;
 
-import com.vetnova.notificaciones.dto.SoporteDTO;
+import com.vetnova.notificaciones.dto.NotificacionRequestDTO;
 import com.vetnova.notificaciones.model.Notificacion;
-import com.vetnova.notificaciones.service.NotificacionService;
+import com.vetnova.notificaciones.service.INotificacionService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,28 +12,41 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notificaciones")
 public class NotificacionController {
 
     private static final Logger logger = LoggerFactory.getLogger(NotificacionController.class);
-    private final NotificacionService notificacionService;
+    private final INotificacionService notificacionService;
 
-    public NotificacionController(NotificacionService notificacionService) {
+    public NotificacionController(INotificacionService notificacionService) {
         this.notificacionService = notificacionService;
     }
 
     @PostMapping
-    public ResponseEntity<Notificacion> crearNotificacion(@Valid @RequestBody SoporteDTO dto) {
+    public ResponseEntity<?> crearNotificacion(@Valid @RequestBody NotificacionRequestDTO dto) {
+
+        if (notificacionService.existeDuplicado(dto.getIdCita(), dto.getTipo(), dto.getEstado())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                Map.of(
+                    "timestamp", LocalDateTime.now(),
+                    "status", HttpStatus.CONFLICT.value(),
+                    "error", "Notificación duplicada",
+                    "detalles", "Ya existe una notificación con el mismo idCita, tipo y estado."
+                )
+            );
+        }
+
         Notificacion notificacion = new Notificacion();
-        notificacion.setTipo("EMAIL");
+        notificacion.setTipo(dto.getTipo());
         notificacion.setDestinatario("usuario-" + dto.getUsuarioId());
         notificacion.setAsunto(dto.getAsunto());
         notificacion.setMensaje(dto.getDescripcion());
         notificacion.setEstado(dto.getEstado());
         notificacion.setFechaEnvio(LocalDateTime.now());
-        notificacion.setIdCita(dto.getUsuarioId());
+        notificacion.setIdCita(dto.getIdCita());
 
         Notificacion nuevaNotificacion = notificacionService.guardar(notificacion);
         logger.info("Notificacion recibida para el usuario ID: {}", dto.getUsuarioId());

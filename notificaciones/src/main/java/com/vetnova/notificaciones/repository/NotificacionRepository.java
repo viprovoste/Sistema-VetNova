@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
+    boolean existsByIdCitaAndTipoAndEstado(Long idCita, String tipo, String estado);
 }
