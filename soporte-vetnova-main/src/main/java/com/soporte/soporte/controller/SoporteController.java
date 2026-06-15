@@ -1,26 +1,40 @@
 package com.soporte.soporte.controller;
 
 import com.soporte.soporte.model.Soporte;
-import com.soporte.soporte.service.SoporteService;
+import com.soporte.soporte.service.ISoporteService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/soportes")
 public class SoporteController {
 
-    private final SoporteService soporteService;
+    private final ISoporteService soporteService;
 
-    public SoporteController(SoporteService soporteService) {
+    public SoporteController(ISoporteService soporteService) {
         this.soporteService = soporteService;
     }
 
     @PostMapping
-    public ResponseEntity<Soporte> crearSoporte(@Valid @RequestBody Soporte soporte) {
+    public ResponseEntity<?> crearSoporte(@Valid @RequestBody Soporte soporte) {
+
+        if (soporteService.existeDuplicado(soporte.getUsuarioId(), soporte.getAsunto())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                Map.of(
+                    "timestamp", LocalDateTime.now(),
+                    "status", HttpStatus.CONFLICT.value(),
+                    "error", "Soporte duplicado",
+                    "detalles", "El usuario ya tiene un soporte abierto con el mismo asunto."
+                )
+            );
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(soporteService.guardar(soporte));
     }
 

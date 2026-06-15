@@ -1,15 +1,11 @@
 package com.soporte.soporte.controller;
 
-
-
 import com.soporte.soporte.model.MensajeSoporte;
-import com.soporte.soporte.service.MensajeSoporteService;
+import com.soporte.soporte.service.IMensajeSoporteService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-
 
 import java.util.List;
 
@@ -17,9 +13,9 @@ import java.util.List;
 @RequestMapping("/soportes/{soporteId}/mensajes")
 public class MensajeSoporteController {
 
-    private final MensajeSoporteService mensajeService;
+    private final IMensajeSoporteService mensajeService;
 
-    public MensajeSoporteController(MensajeSoporteService mensajeService) {
+    public MensajeSoporteController(IMensajeSoporteService mensajeService) {
         this.mensajeService = mensajeService;
     }
 

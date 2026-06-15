@@ -5,15 +5,15 @@ import com.soporte.soporte.client.ReporteClient;
 import com.soporte.soporte.dto.SoporteDTO;
 import com.soporte.soporte.model.Soporte;
 import com.soporte.soporte.repository.SoporteRepository;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SoporteService {
+public class SoporteService implements ISoporteService {
 
     private static final Logger logger = LoggerFactory.getLogger(SoporteService.class);
 
@@ -29,6 +29,7 @@ public class SoporteService {
         this.reporteClient = reporteClient;
     }
 
+    @Override
     public Soporte guardar(Soporte soporte) {
         Soporte guardado = soporteRepository.save(soporte);
 
@@ -55,18 +56,29 @@ public class SoporteService {
         return guardado;
     }
 
+    @Override
     public List<Soporte> listarTodos() {
         logger.info("LOG: Listando todos los soportes");
         return soporteRepository.findAll();
     }
 
+    @Override
     public Optional<Soporte> buscarPorId(Long id) {
         logger.info("LOG: Buscando soporte con ID: {}", id);
         return soporteRepository.findById(id);
     }
 
+    @Override
     public void eliminar(Long id) {
         logger.info("LOG: Eliminando soporte con ID: {}", id);
+        if (!soporteRepository.existsById(id)) {
+            throw new RuntimeException("Soporte no encontrado con ID: " + id);
+        }
         soporteRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existeDuplicado(Long usuarioId, String asunto) {
+        return soporteRepository.existsByUsuarioIdAndAsuntoAndEstadoNot(usuarioId, asunto, "RESUELTO");
     }
 }

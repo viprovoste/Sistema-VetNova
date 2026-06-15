@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SoporteRepository extends JpaRepository<Soporte, Long> {
-    // Aquí puedes añadir consultas personalizadas en el futuro si lo necesitas.
+    boolean existsByUsuarioIdAndAsuntoAndEstadoNot(Long usuarioId, String asunto, String estado);
 }
