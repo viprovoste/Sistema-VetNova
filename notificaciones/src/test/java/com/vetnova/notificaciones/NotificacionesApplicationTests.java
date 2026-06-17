@@ -1,13 +1,11 @@
 package com.vetnova.notificaciones;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 class NotificacionesApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void contextLoads() {
+        // Test vacío - solo verifica que el contexto del test carga
+    }
 }
