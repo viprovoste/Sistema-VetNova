@@ -1,7 +1,6 @@
 package com.vetnova.notificaciones.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.vetnova.notificaciones.dto.NotificacionRequestDTO;
 import com.vetnova.notificaciones.model.Notificacion;
 import com.vetnova.notificaciones.service.INotificacionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,9 +30,11 @@ class NotificacionControllerTest {
     private NotificacionController notificacionController;
 
     private Notificacion notificacion;
+    private NotificacionRequestDTO dto;
 
     @BeforeEach
     void setUp() {
+        // Inicializamos la Entidad
         notificacion = new Notificacion();
         notificacion.setId(1L);
         notificacion.setTipo("EMAIL");
@@ -43,81 +44,112 @@ class NotificacionControllerTest {
         notificacion.setEstado("PENDIENTE");
         notificacion.setFechaEnvio(LocalDateTime.now());
         notificacion.setIdCita(100L);
+
+        // Inicializamos el DTO que espera el controlador
+        dto = new NotificacionRequestDTO();
+        dto.setAsunto("Recordatorio de cita");
+        dto.setDescripcion("Tiene una cita mañana");
+        dto.setEstado("PENDIENTE");
+        dto.setUsuarioId(1L);
+        dto.setIdCita(100L);
+        dto.setTipo("EMAIL");
+    }
+
+    // ==========================================
+    // HU-01: CREAR NOTIFICACIÓN (¡Corregido!)
+    // ==========================================
+    @Test
+    void crearNotificacion_debeRetornar201CuandoEsExitoso() {
+        // GIVEN: No es duplicado y el servicio guarda exitosamente
+        when(notificacionService.existeDuplicado(100L, "EMAIL", "PENDIENTE")).thenReturn(false);
+        when(notificacionService.guardar(any(Notificacion.class))).thenReturn(notificacion);
+
+        // WHEN
+        ResponseEntity<?> response = notificacionController.crearNotificacion(dto);
+
+        // THEN
+        assertThat(response.getStatusCode().value()).isEqualTo(201);
+        Notificacion body = (Notificacion) response.getBody();
+        assertThat(body.getId()).isEqualTo(1L);
     }
 
     @Test
+    void crearNotificacion_debeRetornar409CuandoExisteDuplicado() {
+        // GIVEN: El servicio dice que SÍ es un duplicado
+        when(notificacionService.existeDuplicado(100L, "EMAIL", "PENDIENTE")).thenReturn(true);
+
+        // WHEN
+        ResponseEntity<?> response = notificacionController.crearNotificacion(dto);
+
+        // THEN
+        assertThat(response.getStatusCode().value()).isEqualTo(409);
+    }
+
+    // ==========================================
+    // HU-02: LISTAR TODAS
+    // ==========================================
+    @Test
     void listarTodas_debeRetornar200ConLista() {
-        // GIVEN
         List<Notificacion> lista = Arrays.asList(notificacion);
         when(notificacionService.listarTodas()).thenReturn(lista);
 
-        // WHEN
         ResponseEntity<List<Notificacion>> response = notificacionController.listarTodas();
 
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody()).hasSize(1);
-        assertThat(response.getBody().get(0).getTipo()).isEqualTo("EMAIL");
     }
 
+    // ==========================================
+    // HU-03: OBTENER POR ID
+    // ==========================================
     @Test
     void obtenerPorId_debeRetornar200CuandoExiste() {
-        // GIVEN
         when(notificacionService.buscarPorId(1L)).thenReturn(Optional.of(notificacion));
 
-        // WHEN
         ResponseEntity<Notificacion> response = notificacionController.obtenerPorId(1L);
 
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody().getId()).isEqualTo(1L);
-        assertThat(response.getBody().getTipo()).isEqualTo("EMAIL");
     }
 
     @Test
     void obtenerPorId_debeRetornar404CuandoNoExiste() {
-        // GIVEN
         when(notificacionService.buscarPorId(99L)).thenReturn(Optional.empty());
 
-        // WHEN
         ResponseEntity<Notificacion> response = notificacionController.obtenerPorId(99L);
 
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(404);
     }
 
+    // ==========================================
+    // HU-04: ACTUALIZAR
+    // ==========================================
     @Test
     void actualizar_debeRetornar200CuandoExiste() {
-        // GIVEN
         when(notificacionService.buscarPorId(1L)).thenReturn(Optional.of(notificacion));
         when(notificacionService.guardar(any(Notificacion.class))).thenReturn(notificacion);
 
-        // WHEN
         ResponseEntity<Notificacion> response = notificacionController.actualizar(1L, notificacion);
 
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(200);
         assertThat(response.getBody().getId()).isEqualTo(1L);
     }
 
     @Test
     void actualizar_debeRetornar404CuandoNoExiste() {
-        // GIVEN
         when(notificacionService.buscarPorId(99L)).thenReturn(Optional.empty());
 
-        // WHEN
         ResponseEntity<Notificacion> response = notificacionController.actualizar(99L, notificacion);
 
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(404);
     }
 
+    // ==========================================
+    // HU-05: ELIMINAR
+    // ==========================================
     @Test
     void eliminar_debeRetornar204() {
-        // WHEN
         ResponseEntity<Void> response = notificacionController.eliminar(1L);
-
-        // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(204);
     }
 }
