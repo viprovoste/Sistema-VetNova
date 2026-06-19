@@ -1,6 +1,7 @@
 package com.vetnova.notificaciones.controller;
 
 import com.vetnova.notificaciones.dto.NotificacionRequestDTO;
+import com.vetnova.notificaciones.dto.SoporteDTO;
 import com.vetnova.notificaciones.model.Notificacion;
 import com.vetnova.notificaciones.service.INotificacionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -152,4 +153,22 @@ class NotificacionControllerTest {
         ResponseEntity<Void> response = notificacionController.eliminar(1L);
         assertThat(response.getStatusCode().value()).isEqualTo(204);
     }
+
+    @Test
+void testSoporteDTO() {
+    // GIVEN
+    SoporteDTO dto = new SoporteDTO();
+    
+    // WHEN
+    dto.setAsunto("Problema con inicio de sesión");
+    dto.setDescripcion("No puedo entrar a mi cuenta desde la app");
+    dto.setEstado("PENDIENTE");
+    dto.setUsuarioId(10L);
+    
+    // THEN
+    org.junit.jupiter.api.Assertions.assertEquals("Problema con inicio de sesión", dto.getAsunto());
+    org.junit.jupiter.api.Assertions.assertEquals("No puedo entrar a mi cuenta desde la app", dto.getDescripcion());
+    org.junit.jupiter.api.Assertions.assertEquals("PENDIENTE", dto.getEstado());
+    org.junit.jupiter.api.Assertions.assertEquals(10L, dto.getUsuarioId());
+}
 }
