@@ -156,4 +156,19 @@ class ReporteControllerTest {
         // THEN
         assertThat(response.getStatusCode().value()).isEqualTo(204);
     }
+
+    @Test
+    void crearReporte_debeRetornar201CuandoEstadoEsNullYUsuarioIdEsNull() {
+    // GIVEN
+    dto.setUsuarioId(null);
+    dto.setEstado(null);
+    when(service.guardarReporte(any(Reporte.class))).thenReturn(reporte);
+
+    // WHEN
+    ResponseEntity<Reporte> response = reporteController.crearReporte(dto);
+
+    // THEN
+    assertThat(response.getStatusCode().value()).isEqualTo(201);
+    assertThat(response.getBody()).isNotNull();
+}
 }
