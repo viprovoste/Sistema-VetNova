@@ -1,30 +1,47 @@
 # Microservicio de Soporte - VetNova
 
 ## Descripción
-Microservicio encargado de gestionar los tickets de soporte técnico de la clínica veterinaria VetNova. Permite crear, consultar y eliminar tickets de soporte, así como agregar mensajes de seguimiento a cada ticket. Se comunica con los microservicios de Notificaciones y Reportes mediante Feign Client.
+Microservicio encargado de gestionar los tickets de soporte del sistema VetNova. Permite crear, listar, actualizar y eliminar soportes y sus mensajes asociados, con validación de duplicados por usuario y asunto.
 
 ## Integrantes
-- Sebastián Miranda, Vicente Provoste, Marcel Chamblas
-
-## Funcionalidades implementadas
-- CRUD completo de tickets de soporte
-- Gestión de mensajes por ticket (relación OneToMany)
-- Comunicación con microservicio de Notificaciones vía Feign Client
-- Comunicación con microservicio de Reportes vía Feign Client
-- Manejo centralizado de errores con @ControllerAdvice
-- Validaciones con Bean Validation
-- Logs estructurados con SLF4J
+- Sebastián Miranda
+- Vicente Provoste
+- Bastián Chamblas
 
 ## Tecnologías
 - Java 17
 - Spring Boot 4.0.6
-- Spring Data JPA + Hibernate
 - MySQL
-- Spring Cloud OpenFeign
-- Maven
+- OpenFeign (comunicación con Notificaciones y Reportes)
+- JUnit 5 + Mockito
+- Swagger / OpenAPI (springdoc-openapi)
 
-## Pasos para ejecutar
-1. Tener MySQL corriendo en localhost:3306
-2. La base de datos `soporte_db` se crea automáticamente
-3. Clonar el repositorio
-4. En la carpeta del proyecto ejecutar:
+## Endpoints principales
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| POST | /soportes | Crear soporte |
+| GET | /soportes | Listar todos |
+| GET | /soportes/{id} | Obtener por ID |
+| PUT | /soportes/{id} | Actualizar |
+| DELETE | /soportes/{id} | Eliminar |
+| POST | /soportes/{id}/mensajes | Agregar mensaje |
+| GET | /soportes/{id}/mensajes | Listar mensajes |
+| DELETE | /soportes/{id}/mensajes/{msgId} | Eliminar mensaje |
+
+## Documentación Swagger
+- Local: http://localhost:8087/swagger-ui/index.html
+- JSON: http://localhost:8087/v3/api-docs
+
+## Ejecución local
+1. Tener XAMPP corriendo con MySQL activo
+2. Asegurarse de que la base de datos `soporte_db` existe
+3. Ejecutar:
+```bash
+./mvnw spring-boot:run
+```
+4. El servicio estará disponible en el puerto **8087**
+
+## Pruebas unitarias
+```bash
+./mvnw test
+```
