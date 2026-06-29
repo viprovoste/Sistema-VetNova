@@ -3,6 +3,9 @@ package com.vetnova.notificaciones.controller;
 import com.vetnova.notificaciones.dto.NotificacionRequestDTO;
 import com.vetnova.notificaciones.model.Notificacion;
 import com.vetnova.notificaciones.service.INotificacionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +28,11 @@ public class NotificacionController {
         this.notificacionService = notificacionService;
     }
 
+    @Operation(summary = "Crear una nueva notificación")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Notificación creada exitosamente"),
+        @ApiResponse(responseCode = "409", description = "Notificación duplicada - ya existe una con el mismo idCita, tipo y estado")
+    })
     @PostMapping
     public ResponseEntity<?> crearNotificacion(@Valid @RequestBody NotificacionRequestDTO dto) {
 
@@ -54,11 +62,18 @@ public class NotificacionController {
         return new ResponseEntity<>(nuevaNotificacion, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "Listar todas las notificaciones")
+    @ApiResponse(responseCode = "200", description = "Lista de notificaciones retornada exitosamente")
     @GetMapping
     public ResponseEntity<List<Notificacion>> listarTodas() {
         return ResponseEntity.ok(notificacionService.listarTodas());
     }
 
+    @Operation(summary = "Obtener notificación por ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Notificación encontrada"),
+        @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Notificacion> obtenerPorId(@PathVariable Long id) {
         return notificacionService.buscarPorId(id)
@@ -66,6 +81,11 @@ public class NotificacionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Actualizar notificación existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Notificación actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Notificación no encontrada")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<Notificacion> actualizar(@PathVariable Long id, @Valid @RequestBody Notificacion notificacion) {
         return notificacionService.buscarPorId(id)
@@ -76,6 +96,8 @@ public class NotificacionController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Eliminar notificación por ID")
+    @ApiResponse(responseCode = "204", description = "Notificación eliminada exitosamente")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         notificacionService.eliminarNotificacion(id);
