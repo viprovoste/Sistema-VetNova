@@ -59,9 +59,6 @@ public class FichaClinica {
     @Column(updatable = false)
     private LocalDateTime fechaCreacion;
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean activo = true;
-
     @OneToMany(mappedBy = "fichaClinica", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference("ficha-consultas")
     private List<Consulta> consultas = new ArrayList<>();

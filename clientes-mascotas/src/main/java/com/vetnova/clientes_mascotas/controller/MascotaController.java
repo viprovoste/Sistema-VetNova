@@ -46,7 +46,7 @@ public class MascotaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Mascota> getMascota(@PathVariable Long id) {
+    public ResponseEntity<Mascota> getMascotaxId(@PathVariable Long id) {
         Mascota buscado=mascotaService.findById(id).orElse(null);
         if(buscado==null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
