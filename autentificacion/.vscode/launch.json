@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AutentificacionApplication<autentificacion>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "vetnova.autentificacion.AutentificacionApplication",
+            "projectName": "autentificacion",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
