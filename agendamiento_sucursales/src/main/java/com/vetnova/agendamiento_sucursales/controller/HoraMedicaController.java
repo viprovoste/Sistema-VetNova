@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.vetnova.agendamiento_sucursales.model.HoraMedica;
 import com.vetnova.agendamiento_sucursales.model.HoraMedicaDTO;
 import com.vetnova.agendamiento_sucursales.service.HoraMedicaService;
@@ -24,7 +28,13 @@ public class HoraMedicaController {
     @Autowired
     private HoraMedicaService horaMedicaService;
 
-    @PostMapping 
+    @Operation(summary = "Agenda una nueva hora médica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Hora médica agendada en estado CONFIRMADA"),
+        @ApiResponse(responseCode = "400", description = "Mascota, cliente o box no válidos"),
+        @ApiResponse(responseCode = "409", description = "Conflicto durante el agendamiento")
+    })
+    @PostMapping
     public ResponseEntity<HoraMedica> postHoraMedica(@RequestBody HoraMedicaDTO dto) {
         try {
             HoraMedica nuevo = horaMedicaService.guardarHoraMedica(dto);
@@ -37,6 +47,11 @@ public class HoraMedicaController {
         }
     }
 
+    @Operation(summary = "Busca horas médicas por nombre de mascota")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Horas encontradas"),
+        @ApiResponse(responseCode = "204", description = "No hay horas para esa mascota")
+    })
     @GetMapping("/buscar/mascota/{nombre}")
     public ResponseEntity<List<HoraMedica>> getHorasxNombreMascota(@PathVariable String nombre) {
         List<HoraMedica> buscados = horaMedicaService.listarPorNombreMascota(nombre);
@@ -45,7 +60,12 @@ public class HoraMedicaController {
         }
         return new ResponseEntity<>(buscados, HttpStatus.OK);
     }
-    
+
+    @Operation(summary = "Busca horas médicas por nombre del dueño")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Horas encontradas"),
+        @ApiResponse(responseCode = "204", description = "No hay horas para ese dueño")
+    })
     @GetMapping("/buscar/dueño/{nombre}")
     public ResponseEntity<List<HoraMedica>> getHorasxNombreDueño(@PathVariable String nombre) {
         List<HoraMedica> buscados = horaMedicaService.listarPorNombreDueño(nombre);
@@ -55,6 +75,11 @@ public class HoraMedicaController {
         return new ResponseEntity<>(buscados, HttpStatus.OK);
     }
 
+    @Operation(summary = "Busca horas médicas por rut del dueño")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Horas encontradas"),
+        @ApiResponse(responseCode = "204", description = "No hay horas para ese rut")
+    })
     @GetMapping("/buscar/rut/{rut}")
     public ResponseEntity<List<HoraMedica>> getHorasxRut(@PathVariable String rut) {
         List<HoraMedica> buscados = horaMedicaService.listarPorRutDueño(rut);
@@ -64,6 +89,11 @@ public class HoraMedicaController {
         return new ResponseEntity<>(buscados, HttpStatus.OK);
     }
 
+    @Operation(summary = "Busca horas médicas por nombre del veterinario")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Horas encontradas"),
+        @ApiResponse(responseCode = "204", description = "No hay horas para ese veterinario")
+    })
     @GetMapping("/buscar/veterinario/{nombre}")
     public ResponseEntity<List<HoraMedica>> getHorasxVeterinario(@PathVariable String nombre) {
         List<HoraMedica> buscados = horaMedicaService.listarPorVeterinario(nombre);
@@ -73,6 +103,11 @@ public class HoraMedicaController {
         return new ResponseEntity<>(buscados, HttpStatus.OK);
     }
 
+    @Operation(summary = "Reprograma parcialmente una hora médica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Hora médica actualizada"),
+        @ApiResponse(responseCode = "404", description = "La hora médica no existe")
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<HoraMedica> patchHoraMedica(
             @PathVariable Long id,
@@ -84,6 +119,11 @@ public class HoraMedicaController {
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
+    @Operation(summary = "Cancela una hora médica (cancelación lógica, estado CANCELADA)")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Hora médica cancelada"),
+        @ApiResponse(responseCode = "404", description = "La hora médica no existe")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<HoraMedica> cancelarHoraMedica(@PathVariable Long id) {
         HoraMedica cancelado = horaMedicaService.cancelarHoraMedica(id);

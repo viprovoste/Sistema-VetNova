@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 import com.vetnova.clientes_mascotas.model.Mascota;
 import com.vetnova.clientes_mascotas.model.MascotaDTO;
 import com.vetnova.clientes_mascotas.service.MascotaService;
@@ -25,6 +29,11 @@ public class MascotaController {
     @Autowired
     private MascotaService mascotaService;
 
+    @Operation(summary = "Lista todas las mascotas registradas")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Listado de mascotas obtenido"),
+        @ApiResponse(responseCode = "204", description = "No hay mascotas registradas")
+    })
     @GetMapping
     public ResponseEntity<List<Mascota>> getMascotas() {
         List<Mascota> mascotas = mascotaService.listarMascotas();
@@ -35,6 +44,11 @@ public class MascotaController {
         return new ResponseEntity<>(mascotas, HttpStatus.OK);
     }
 
+    @Operation(summary = "Registra una nueva mascota asociada a un cliente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Mascota creada correctamente"),
+        @ApiResponse(responseCode = "400", description = "El cliente dueño no existe")
+    })
     @PostMapping
     public ResponseEntity<Mascota> postMascota(@Valid @RequestBody MascotaDTO dto) {
         try {
@@ -45,6 +59,11 @@ public class MascotaController {
         }
     }
 
+    @Operation(summary = "Obtiene una mascota por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mascota encontrada"),
+        @ApiResponse(responseCode = "204", description = "La mascota no existe")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<Mascota> getMascotaxId(@PathVariable Long id) {
         Mascota buscado=mascotaService.findById(id).orElse(null);
@@ -53,7 +72,12 @@ public class MascotaController {
         }
         return new ResponseEntity<>(buscado,HttpStatus.OK);
     }
-    
+
+    @Operation(summary = "Busca mascotas por su nombre")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mascotas encontradas"),
+        @ApiResponse(responseCode = "204", description = "No hay mascotas con ese nombre")
+    })
     @GetMapping("/buscar/nombre/{nombre}")
     public ResponseEntity<List<Mascota>> getMascotaxNombre(@PathVariable String nombre) {
         List<Mascota> buscados = mascotaService.findByNombre(nombre);
@@ -63,6 +87,11 @@ public class MascotaController {
         return new ResponseEntity<>(buscados,HttpStatus.OK);
     }
 
+    @Operation(summary = "Actualiza parcialmente los datos de una mascota")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Mascota actualizada"),
+        @ApiResponse(responseCode = "404", description = "La mascota no existe")
+    })
     @PatchMapping("/{id}")
     public ResponseEntity<Mascota> patchMascota(@PathVariable Long id, @RequestBody Mascota datosaCambiar) {
         Mascota actualizado = mascotaService.actualizarMascota(id, datosaCambiar);
@@ -73,6 +102,11 @@ public class MascotaController {
         return new ResponseEntity<>(actualizado, HttpStatus.OK);
     }
 
+    @Operation(summary = "Elimina una mascota por su ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Mascota eliminada"),
+        @ApiResponse(responseCode = "404", description = "La mascota no existe")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarMascota(@PathVariable Long id) {
         boolean eliminado = mascotaService.eliminarMascota(id);
